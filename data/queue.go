@@ -3,83 +3,41 @@ package data
 import "fmt"
 
 type Queue struct {
-	Head *node
-	Rear *node
+	arr []*node
+}
+
+func (queue *Queue) Head() *node {
+	return queue.arr[len(queue.arr)-1]
+}
+
+func (queue *Queue) Rear() *node {
+	return queue.arr[0]
 }
 
 func (queue *Queue) Push(value interface{}) {
-	if queue.Rear == nil {
-		queue.Rear = &node{Data: value, Next: nil, Previous: nil}
-		return
+	i := &node{Data: value, Next: nil}
+
+	queue.arr = append(queue.arr, i)
+
+	if len(queue.arr) > 1 {
+		queue.arr[len(queue.arr)-2].Next = queue.arr[len(queue.arr)-1]
 	}
+}
 
-	if queue.Head == nil {
-		queue.Head = &node{Data: value, Next: queue.Rear, Previous: nil}
-		queue.Rear.Previous = queue.Head
-		return
-	}
-
-	node := &node{Data: value, Next: queue.Head, Previous: nil}
-
-	node.Next.Previous = node
-	node.Next.Previous.Next = queue.Head
-	queue.Head = node
-
+func (queue *Queue) Pop() {
+	queue.arr = queue.arr[:len(queue.arr)-1]
+	queue.arr[len(queue.arr)-1].Next = nil
 }
 
 func (queue *Queue) Display() {
+	for i := 0; i < len(queue.arr); i++ {
+		fmt.Println("CURRENT: ", queue.arr[i].Data)
 
-	s := queue.Head
-
-	for s != nil {
-
-		var next interface{}
-		var previous interface{}
-
-		if s.Next == nil {
-			next = nil
-		} else {
-			next = s.Next.Data
+		if queue.arr[i].Next != nil{
+			fmt.Println("NEXT: ", queue.arr[i].Next.Data)
 		}
 
-		if s.Previous == nil {
-			previous = nil
-		} else {
-			previous = s.Previous.Data
-		}
+		fmt.Println("-----------------------")
 
-		fmt.Printf("NEXT: %d | CURRENT: %d | PREVIOUS: %d\n", next, s.Data, previous)
-		fmt.Println("---------------------------------------------")
-
-		s = s.Next
 	}
-}
-
-func (queue *Queue) DisplayPrevious() {
-
-	s := queue.Rear
-
-	for s != nil {
-
-		var next interface{}
-		var previous interface{}
-
-		if s.Next == nil {
-			next = nil
-		} else {
-			next = s.Next.Data
-		}
-
-		if s.Previous == nil {
-			previous = nil
-		} else {
-			previous = s.Previous.Data
-		}
-
-		fmt.Printf("NEXT: %d | CURRENT: %d | PREVIOUS: %d\n", next, s.Data, previous)
-		fmt.Println("---------------------------------------------")
-
-		s = s.Previous
-	}
-
 }

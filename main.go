@@ -1,7 +1,13 @@
 package main
 
 import (
-	dt "github.com/Art0r/data_structures/data"
+	// "fmt"
+	// "strings"
+
+	// "fmt"
+
+	// dt "github.com/Art0r/data_structures/data"
+	programs "github.com/Art0r/data_structures/programs"
 )
 
 func main() {
@@ -30,38 +36,23 @@ func main() {
 
 	// queue := dt.Queue{}
 
-	// fmt.Println(queue.Head)
-	// fmt.Println(queue.Rear)
-
 	// queue.Push(1)
 	// queue.Push(2)
 	// queue.Push(3)
 	// queue.Push(4)
+	
+	// fmt.Println("HEAD: ", queue.Head())
+	// fmt.Println("REAR: ", queue.Rear())
 
+	// queue.Pop()
 	// fmt.Println("-------------------------------------")
 
-	// fmt.Println(queue.Head)
-	// fmt.Println(queue.Rear)
+	// fmt.Println("HEAD: ", queue.Head())
+	// fmt.Println("REAR: ", queue.Rear())
+
+	// fmt.Println("#########################################")
 
 	// queue.Display()
 
-	// queue.DisplayPrevious()
-
-	// Create a new graph
-	graph := &dt.Graph{}
-
-	// Add some nodes
-	node1 := graph.AddNode(1)
-	node2 := graph.AddNode(2)
-	node3 := graph.AddNode(3)
-	node4 := graph.AddNode(4)
-
-	// Add edges between nodes
-	graph.AddEdge(node1, node2)
-	graph.AddEdge(node1, node3)
-	graph.AddEdge(node2, node4)
-	graph.AddEdge(node3, node4)
-
-	// Print the graph
-	graph.PrintGraph()
+	programs.RunVendor()
 }
