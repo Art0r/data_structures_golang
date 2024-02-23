@@ -1,0 +1,43 @@
+node1 := graph.AddNode(&Vendor{Name: "Alice", Ocuppation: "Vendedora de abacaxi"})
+node2 := graph.AddNode(&Vendor{Name: "Bob", Ocuppation: "Vendedor de mamão"})
+node3 := graph.AddNode(&Vendor{Name: "Peggy", Ocuppation: "Vendedor de abacate"})
+node4 := graph.AddNode(&Vendor{Name: "Claire", Ocuppation: "Vendedora de abacaxi"})
+node5 := graph.AddNode(&Vendor{Name: "Anuj", Ocuppation: "Vendedora de mamão"})
+node6 := graph.AddNode(&Vendor{Name: "Thom", Ocuppation: "Vendedora de manga"})
+node7 := graph.AddNode(&Vendor{Name: "Jonny", Ocuppation: "Vendedora de mamão"})
+
+node2 -> node5
+node2 -> node3
+node1 -> node3
+node4 -> node6
+node4 -> node7
+
+--------------------------------------------
+[node1, node2, node4]
+
+Alice
+
+--------------------------------------------
+[node2, node4]
+
+Bob
+
+--------------------------------------------
+[node4, node5, node3]
+
+Claire
+
+--------------------------------------------
+[node5, node3, node6, node7]
+
+Anuj
+
+--------------------------------------------
+[node3, node6, node7]
+
+Peggy
+
+--------------------------------------------
+[node6, node7]
+
+Thom
