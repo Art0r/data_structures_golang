@@ -40,7 +40,7 @@ func main() {
 	// queue.Push(2)
 	// queue.Push(3)
 	// queue.Push(4)
-	
+
 	// fmt.Println("HEAD: ", queue.Head())
 	// fmt.Println("REAR: ", queue.Rear())
 
@@ -54,5 +54,7 @@ func main() {
 
 	// queue.Display()
 
-	programs.RunVendor()
+	// programs.RunVendor()
+
+	programs.ExecDijkstra(4)
 }
