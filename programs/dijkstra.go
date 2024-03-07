@@ -5,70 +5,92 @@ import (
 	"math"
 )
 
-type Graph struct {
-	Vertices []*Vertex
-	Edges    []*Edge
+type dijkstraData struct {
+	Weights map[*vertex]int
+	Visited map[*vertex]bool
 }
 
-func (g *Graph) AddVertex(data interface{}) *Vertex {
-	vertex := &Vertex{Data: data}
+func (dd *dijkstraData) Init() {
+	dd.Weights = make(map[*vertex]int)
+	dd.Visited = make(map[*vertex]bool)
+}
+
+type vertex struct {
+	Data interface{}
+}
+
+type edge struct {
+	From   *vertex
+	To     *vertex
+	Weight int
+}
+
+type graph struct {
+	Vertices []*vertex
+	Edges    []*edge
+}
+
+func (g *graph) AddVertex(data interface{}) *vertex {
+	vertex := &vertex{Data: data}
 	g.Vertices = append(g.Vertices, vertex)
 	return vertex
 }
 
-func (g *Graph) AddEdge(from, to *Vertex, weight int) {
-	edge := &Edge{From: from, To: to, Weight: weight}
+func (g *graph) AddEdge(from, to *vertex, weight int) {
+	edge := &edge{From: from, To: to, Weight: weight}
 	g.Edges = append(g.Edges, edge)
 }
 
-type DijkstraData struct {
-	Distances map[*Vertex]int
-	Visited   map[*Vertex]bool
-}
+func (g *graph) dijkstra(start *vertex) map[*vertex]int {
 
-func (dd *DijkstraData) Init() {
-	dd.Distances = make(map[*Vertex]int)
-	dd.Visited = make(map[*Vertex]bool)
-}
-
-func (g *Graph) dijkstra(start *Vertex) map[*Vertex]int {
-
-	data := DijkstraData{}
+	data := dijkstraData{}
 	data.Init()
 
+	/* for every vertex except for the **starting vertex**
+	weight must be infinite in the beggining because
+	we still dont know if this other vertex is
+	"recheable". Basically in this step we're popullating
+	our **weights** variable, being it ordered or not
+	*/
 	for _, vertex := range g.Vertices {
 		if vertex != start {
-			data.Distances[vertex] = math.MaxInt32
+			data.Weights[vertex] = math.MaxInt32
 		}
 	}
-	data.Distances[start] = 0
+	// the start always weight of 0
+	data.Weights[start] = 0
 
-	for {
-		vertex := g.minDistance(data)
-		if vertex == nil {
-			break
-		}
-		data.Visited[vertex] = true
+	g.minorDistanceToNodes(&data)
 
-		for _, edge := range g.Edges {
-			if edge.From == vertex && !data.Visited[edge.To] {
-				newDist := data.Distances[vertex] + edge.Weight
-				if newDist < data.Distances[edge.To] {
-					data.Distances[edge.To] = newDist
-				}
+	return data.Weights
+}
+
+func (g *graph) minorDistanceToNodes(data *dijkstraData) func() {
+	vertex := g.minDistance(data)
+	if vertex == nil {
+		return func() {}
+	}
+
+	data.Visited[vertex] = true
+
+	for _, edge := range g.Edges {
+		if edge.From == vertex && !data.Visited[edge.To] {
+			newDist := data.Weights[vertex] + edge.Weight
+			if newDist < data.Weights[edge.To] {
+				data.Weights[edge.To] = newDist
 			}
 		}
 	}
 
-	return data.Distances
+	return g.minorDistanceToNodes(data)
 }
 
-func (g *Graph) minDistance(args DijkstraData) *Vertex {
+func (g *graph) minDistance(args *dijkstraData) *vertex {
 	min := math.MaxInt32
-	var minVertex *Vertex
+	var minVertex *vertex
 	for _, vertex := range g.Vertices {
-		if !args.Visited[vertex] && args.Distances[vertex] < min {
-			min = args.Distances[vertex]
+		if !args.Visited[vertex] && args.Weights[vertex] < min {
+			min = args.Weights[vertex]
 			minVertex = vertex
 		}
 	}
@@ -76,38 +98,31 @@ func (g *Graph) minDistance(args DijkstraData) *Vertex {
 	return minVertex
 }
 
-func ExecDijkstra(start interface{}) {
-	g := Graph{}
+func ExecDijkstra() {
+	g := graph{}
 
-	v1 := g.AddVertex(0)
-	v2 := g.AddVertex(1)
-	v3 := g.AddVertex(2)
-	v4 := g.AddVertex(3)
-	v5 := g.AddVertex(4)
+	a := g.AddVertex("A")
+	b := g.AddVertex("B")
+	c := g.AddVertex("C")
+	d := g.AddVertex("D")
+	e := g.AddVertex("E")
 
-	g.AddEdge(v1, v2, 7)
-	g.AddEdge(v2, v1, 7)
+	g.AddEdge(a, b, 4)
+	g.AddEdge(a, c, 2)
+	g.AddEdge(b, d, 2)
+	g.AddEdge(c, e, 5)
+	g.AddEdge(c, b, 1)
+	g.AddEdge(b, c, 3)
+	g.AddEdge(e, d, 1)
+	g.AddEdge(b, e, 3)
+	g.AddEdge(c, d, 4)
 
-	g.AddEdge(v2, v3, 1)
-	g.AddEdge(v3, v2, 1)
+	result := g.dijkstra(a)
 
-	g.AddEdge(v4, v1, 9)
-	g.AddEdge(v1, v4, 9)
-
-	g.AddEdge(v5, v4, 6)
-	g.AddEdge(v4, v5, 6)
-
-	result := g.dijkstra(v5)
-
-	fmt.Println(result)
-}
-
-type Vertex struct {
-	Data interface{}
-}
-
-type Edge struct {
-	From   *Vertex
-	To     *Vertex
-	Weight int
+	fmt.Println("-------------------")
+	for index, vertex := range result {
+		fmt.Println("VERTEX: ", index.Data)
+		fmt.Println("DISTANCE:", vertex)
+		fmt.Println("-------------------")
+	}
 }

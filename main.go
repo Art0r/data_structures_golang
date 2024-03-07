@@ -56,5 +56,5 @@ func main() {
 
 	// programs.RunVendor()
 
-	programs.ExecDijkstra(4)
+	programs.ExecDijkstra()
 }
